@@ -4,399 +4,150 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Book Review Thumbnail Maker</title>
-  <style>
-    body {
-      font-family: "Nanum Myeongjo", serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-    }
-    .controls {
-      display: flex;
-      justify-content: space-between;
-      width: 640px;
-      margin-bottom: 20px;
-    }
-    .controls-left {
-      display: flex;
-    }
-    .controls-left > * {
-      margin-right: 10px;
-    }
-    #gradient-preview {
-      width: 640px;
-      height: 360px;
-      position: relative;
-      border: 1px solid #ccc;
-      margin-top: 20px;
-      display: flex;
-      align-items: flex-start;
-      overflow: hidden;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-    .gradient-background {
-      background: linear-gradient(135deg, #A2DED0, #F7CAC9);
-    }
-    #overlay-image-container {
-      position: relative;
-      width: 50%;
-      height: 100%;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    #overlay-image {
-      max-width: 100%;
-      max-height: 100%;
-      width: auto;
-      height: auto;
-    }
-    #user-text-container {
-      width: 50%;
-      padding: 10px;
-      box-sizing: border-box;
-      font-size: 18px;
-      margin: 0;
-      font-family: "Nanum Myeongjo", serif;
-      line-height: 1.5;
-      color: #000;
-      text-align: left;
-      white-space: pre-wrap;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-    }
-    #user-text {
-      width: 100%;
-      max-width: 320px;
-      height: 100px;
-      background-color: #f0f0f0;
-      border: 1px solid #ccc;
-      resize: vertical;
-      overflow: auto;
-      font-family: "Nanum Myeongjo", serif;
-      color: #000;
-    }
-    #font-size {
-      width: 50px;
-      margin-top: 10px;
-    }
-  </style>
-  <!-- 한글 폰트 'Nanum Myeongjo' 불러오기 -->
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap"
-  />
+  
+  <!-- Favicon 설정 -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+  
+  <!-- 확실한 한글 지원 폰트 5개 + 개성있는 폰트 5개 -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;500;700&family=Lato:wght@300;400;700&family=Montserrat:wght@300;400;500;700&family=Jua&family=Gaegu:wght@300;400;700&family=Do+Hyeon&family=Black+Han+Sans&family=Sunflower:wght@300;500;700&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
-<body onload="updateGradient()">
-  <h1>Book Review Thumbnail Maker</h1>
-  <div class="controls">
-    <div class="controls-left">
-      <div>
-        <label for="angle">Angle:</label>
-        <select id="angle-select" onchange="updateGradient()">
-          <option value="0">↑ Bottom to Top</option>
-          <option value="45">↗ Bottom-Left to Top-Right</option>
-          <option value="90">→ Left to Right</option>
-          <option value="135" selected>↘ Top-Left to Bottom-Right</option>
-          <option value="180">↓ Top to Bottom</option>
-          <option value="225">↙ Top-Right to Bottom-Left</option>
-          <option value="270">← Right to Left</option>
-          <option value="315">↖ Bottom-Right to Top-Left</option>
-        </select>
+<body>
+  <div class="header">
+    <h1>📚 Book Review Thumbnail Maker</h1>
+    <p>책 리뷰 썸네일을 쉽게 만들어보세요. 텍스트를 드래그하여 위치를 조정할 수 있습니다!</p>
+  </div>
+
+  <div class="main-container">
+    <div class="controls-panel">
+      <!-- Background Controls -->
+      <div class="control-group">
+        <h3>🎨 배경 설정</h3>
+        <div class="control-row">
+          <label>그라데이션:</label>
+          <select id="angle-select" onchange="updateGradient()">
+            <option value="0">↑ 아래에서 위로</option>
+            <option value="45">↗ 좌하단에서 우상단</option>
+            <option value="90">→ 왼쪽에서 오른쪽</option>
+            <option value="135" selected>↘ 좌상단에서 우하단</option>
+            <option value="180">↓ 위에서 아래로</option>
+            <option value="225">↙ 우상단에서 좌하단</option>
+            <option value="270">← 오른쪽에서 왼쪽</option>
+            <option value="315">↖ 우하단에서 좌상단</option>
+          </select>
+        </div>
+        <div class="color-grid">
+          <div class="control-row">
+            <label>색상 1:</label>
+            <input type="color" id="color1" value="#A2DED0" onchange="updateGradient()" />
+          </div>
+          <div class="control-row">
+            <label>색상 2:</label>
+            <input type="color" id="color2" value="#F7CAC9" onchange="updateGradient()" />
+          </div>
+        </div>
+        <div class="control-row">
+          <button onclick="randomizePastelColors()">파스텔 색상</button>
+          <button onclick="randomizeColors()">랜덤 색상</button>
+        </div>
       </div>
-      <div>
-        <label for="color1">First Color:</label>
-        <input
-          type="color"
-          id="color1"
-          value="#A2DED0"
-          onchange="updateGradient()"
-        />
+
+      <!-- Image Controls -->
+      <div class="control-group">
+        <h3>📖 책 표지</h3>
+        <div class="control-row">
+          <label>이미지:</label>
+          <input type="file" id="image-upload" accept="image/*" onchange="uploadImage()" />
+        </div>
       </div>
-      <div>
-        <label for="color2">Second Color:</label>
-        <input
-          type="color"
-          id="color2"
-          value="#F7CAC9"
-          onchange="updateGradient()"
-        />
+
+      <!-- Text Controls -->
+      <div class="control-group">
+        <h3>✏️ 텍스트 설정</h3>
+        <div class="control-row">
+          <label>폰트:</label>
+          <select id="font-family" onchange="updateTextStyle()">
+            <optgroup label="🌍 글로벌 폰트">
+              <option value="Roboto" selected>Roboto (기본)</option>
+              <option value="Inter">Inter</option>
+              <option value="Open Sans">Open Sans</option>
+              <option value="Lato">Lato</option>
+              <option value="Montserrat">Montserrat</option>
+            </optgroup>
+            <optgroup label="🎨 개성있는 폰트">
+              <option value="Jua">주아 (둥근체)</option>
+              <option value="Gaegu">개구 (귀여운체)</option>
+              <option value="Do Hyeon">도현 (손글씨)</option>
+              <option value="Black Han Sans">검은고딕 (굵은체)</option>
+              <option value="Sunflower">해바라기</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="control-row">
+          <label>크기:</label>
+          <input type="range" id="font-size" min="12" max="60" value="20" oninput="updateTextStyle()" />
+          <span id="font-size-value">20px</span>
+        </div>
+        <div class="control-row">
+          <label>색상:</label>
+          <input type="color" id="text-color" value="#000000" onchange="updateTextStyle()" />
+        </div>
+        <div class="control-row">
+          <label>정렬:</label>
+          <div class="alignment-buttons">
+            <button onclick="setTextAlign('left')" id="align-left" class="active">왼쪽</button>
+            <button onclick="setTextAlign('center')" id="align-center">중앙</button>
+            <button onclick="setTextAlign('right')" id="align-right">오른쪽</button>
+          </div>
+        </div>
+        <div class="control-row">
+          <label>수직 위치:</label>
+          <div class="alignment-buttons">
+            <button onclick="setVerticalAlign('top')" id="valign-top">상단</button>
+            <button onclick="setVerticalAlign('middle')" id="valign-middle" class="active">중앙</button>
+            <button onclick="setVerticalAlign('bottom')" id="valign-bottom">하단</button>
+          </div>
+        </div>
+        <div class="control-row">
+          <label>그림자:</label>
+          <input type="range" id="text-shadow" min="0" max="10" value="4" oninput="updateTextStyle()" />
+          <span id="shadow-value">4px</span>
+        </div>
+        <div class="help-text">💡 텍스트를 드래그하여 위치를 조정하세요!</div>
       </div>
-      <div>
-        <!-- 기존 버튼의 레이블을 변경하고 함수명을 수정 -->
-        <button onclick="randomizePastelColors()">Random Pastel Color</button>
-        <!-- 새로운 Random Color 버튼 추가 -->
-        <button onclick="randomizeColors()">Random Color</button>
+
+      <!-- Quick Presets -->
+      <div class="control-group">
+        <h3>🚀 빠른 설정</h3>
+        <div class="control-row">
+          <button onclick="applyPreset('modern')">모던</button>
+          <button onclick="applyPreset('classic')">클래식</button>
+        </div>
+        <div class="control-row">
+          <button onclick="applyPreset('warm')">따뜻한</button>
+          <button onclick="applyPreset('cool')">시원한</button>
+        </div>
       </div>
     </div>
-    <div class="controls-right">
-      <div>
-        <button onclick="downloadImage()">Download Image</button>
+
+    <div class="preview-container">
+      <div id="gradient-preview" class="gradient-background">
+        <div id="overlay-image-container">
+          <img id="overlay-image" src="" alt="Book Cover" style="display: none" />
+        </div>
+        <div id="draggable-text"></div>
+        <div class="position-indicator" id="position-indicator" style="display: none;"></div>
       </div>
-      <div>
-        <label for="image-upload">Upload Book Cover:</label>
-        <input
-          type="file"
-          id="image-upload"
-          accept="image/*"
-          onchange="uploadImage()"
-        />
+      
+      <textarea id="user-text" placeholder="여기에 책 리뷰 텍스트를 입력하세요...&#10;&#10;예시:&#10;이 책은 정말 감동적이었습니다.&#10;작가의 섬세한 묘사가 인상적이고&#10;마지막까지 긴장감을 놓을 수 없었어요." oninput="updateUserText()"></textarea>
+      
+      <div class="download-section">
+        <button onclick="downloadImage()">🔽 썸네일 다운로드</button>
       </div>
     </div>
   </div>
 
-  <div id="gradient-preview" class="gradient-background">
-    <div id="overlay-image-container">
-      <img
-        id="overlay-image"
-        src=""
-        alt="Overlay Image"
-        style="display: none"
-      />
-    </div>
-    <div id="user-text-container"></div>
-  </div>
-  <textarea
-    id="user-text"
-    placeholder="텍스트를 입력하세요..."
-    oninput="updateUserText()"
-  ></textarea>
-  <input
-    type="number"
-    id="font-size"
-    value="20"
-    min="10"
-    max="100"
-    oninput="updateUserText()"
-  />
-
-  <script>
-    function updateGradient() {
-      const angle = document.getElementById("angle-select").value;
-      const color1 = document.getElementById("color1").value;
-      const color2 = document.getElementById("color2").value;
-      const gradient = `linear-gradient(${angle}deg, ${color1}, ${color2})`;
-
-      const preview = document.getElementById("gradient-preview");
-      preview.style.background = gradient;
-    }
-
-    function uploadImage() {
-      const fileInput = document.getElementById("image-upload");
-      const file = fileInput.files[0];
-      const reader = new FileReader();
-
-      reader.onload = function (e) {
-        const overlayImage = document.getElementById("overlay-image");
-        overlayImage.src = e.target.result;
-        overlayImage.style.display = "block";
-
-        // 이미지 크기 조절
-        const overlayImageContainer = document.getElementById("overlay-image-container");
-
-        const img = new Image();
-        img.src = e.target.result;
-
-        img.onload = function () {
-          const containerWidth = overlayImageContainer.clientWidth;
-          const containerHeight = overlayImageContainer.clientHeight;
-          const imgAspectRatio = img.width / img.height;
-          const containerAspectRatio = containerWidth / containerHeight;
-
-          if (imgAspectRatio > containerAspectRatio) {
-            // 이미지가 더 넓은 경우
-            overlayImage.style.width = "100%";
-            overlayImage.style.height = "auto";
-          } else {
-            // 이미지가 더 높은 경우
-            overlayImage.style.width = "auto";
-            overlayImage.style.height = "100%";
-          }
-        };
-      };
-
-      if (file) {
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function downloadImage() {
-      const overlayImage = document.getElementById("overlay-image");
-      const userText = document.getElementById("user-text").value;
-      const fontSize = parseInt(document.getElementById("font-size").value);
-      const color1 = document.getElementById("color1").value;
-      const color2 = document.getElementById("color2").value;
-      const angle = parseInt(document.getElementById("angle-select").value);
-
-      // 미리보기 영역의 크기
-      const previewWidth = 640;
-      const previewHeight = 360;
-
-      // 캔버스 크기를 높여서 해상도를 개선합니다.
-      const canvasWidth = 1920;
-      const canvasHeight = 1080;
-
-      // 스케일링 팩터 계산
-      const scaleX = canvasWidth / previewWidth;
-      const scaleY = canvasHeight / previewHeight;
-
-      const canvas = document.createElement("canvas");
-      canvas.width = canvasWidth;
-      canvas.height = canvasHeight;
-
-      const ctx = canvas.getContext("2d");
-
-      // 폰트 로딩 후 작업 실행
-      document.fonts.load(`normal ${fontSize * scaleY}px "Nanum Myeongjo"`).then(() => {
-        // 그라데이션 배경 그리기
-        const { x0, y0, x1, y1 } = getGradientCoordinates(angle, canvasWidth, canvasHeight);
-        const gradient = ctx.createLinearGradient(x0, y0, x1, y1);
-        gradient.addColorStop(0, color1);
-        gradient.addColorStop(1, color2);
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-        // 패딩 설정 (미리보기 영역의 패딩에 스케일링 적용)
-        const padding = 20 * scaleX;
-
-        if (overlayImage.src && overlayImage.style.display !== "none") {
-          const img = new Image();
-          img.src = overlayImage.src;
-
-          img.onload = function () {
-            // 이미지 크기 조절 (비율 유지)
-            let imgWidth = img.width;
-            let imgHeight = img.height;
-
-            const maxImgWidth = (canvasWidth - padding * 2) * 0.5;
-            const maxImgHeight = canvasHeight - padding * 2;
-
-            const widthRatio = maxImgWidth / imgWidth;
-            const heightRatio = maxImgHeight / imgHeight;
-            const scale = Math.min(widthRatio, heightRatio, 1);
-
-            imgWidth *= scale;
-            imgHeight *= scale;
-
-            // 이미지 위치 조정 (패딩 적용)
-            const imgX = padding;
-            const imgY = padding + (maxImgHeight - imgHeight) / 2;
-
-            ctx.drawImage(img, imgX, imgY, imgWidth, imgHeight);
-
-            // 텍스트 그리기
-            drawText(ctx, userText, fontSize * scaleY, canvasWidth, canvasHeight, padding, scaleX, scaleY);
-
-            // 이미지 다운로드
-            const link = document.createElement("a");
-            link.href = canvas.toDataURL("image/png");
-            link.download = "thumbnail.png";
-            link.click();
-          };
-          img.onerror = function () {
-            alert("이미지 로드에 실패했습니다.");
-          };
-        } else {
-          // 이미지가 없을 경우 텍스트만 그리기
-          drawText(ctx, userText, fontSize * scaleY, canvasWidth, canvasHeight, padding, scaleX, scaleY);
-
-          // 이미지 다운로드
-          const link = document.createElement("a");
-          link.href = canvas.toDataURL("image/png");
-          link.download = "thumbnail.png";
-          link.click();
-        }
-      });
-    }
-
-    function getGradientCoordinates(angle, width, height) {
-      const angleRadians = (angle * Math.PI) / 180;
-      const halfWidth = width / 2;
-      const halfHeight = height / 2;
-
-      const x0 = halfWidth + Math.cos(angleRadians + Math.PI) * halfWidth;
-      const y0 = halfHeight + Math.sin(angleRadians + Math.PI) * halfHeight;
-      const x1 = halfWidth + Math.cos(angleRadians) * halfWidth;
-      const y1 = halfHeight + Math.sin(angleRadians) * halfHeight;
-
-      return { x0, y0, x1, y1 };
-    }
-
-    function drawText(ctx, userText, fontSize, canvasWidth, canvasHeight, padding, scaleX, scaleY) {
-      ctx.font = `${fontSize}px "Nanum Myeongjo", serif`;
-      ctx.textAlign = "left";
-      ctx.textBaseline = "middle";
-
-      const lines = userText.split('\n');
-      const lineHeight = fontSize * 1.5;
-
-      // 미리보기에서의 텍스트 X 위치를 스케일링하여 계산
-      const previewTextX = 320 + 10; // 미리보기에서의 텍스트 X 위치 (이미지 컨테이너 너비 + 내부 패딩)
-      const textX = previewTextX * scaleX;
-
-      // 텍스트 Y 위치 계산
-      let textY = canvasHeight / 2 - (lineHeight * (lines.length - 1)) / 2;
-
-      // 텍스트 그리기
-      ctx.fillStyle = "#000";
-      ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
-      ctx.shadowOffsetX = 2 * scaleX;
-      ctx.shadowOffsetY = 2 * scaleY;
-      ctx.shadowBlur = 4 * Math.max(scaleX, scaleY);
-
-      lines.forEach(line => {
-        ctx.fillText(line, textX, textY);
-        textY += lineHeight;
-      });
-
-      // 그림자 설정 초기화
-      ctx.shadowColor = "transparent";
-    }
-
-    function updateUserText() {
-      const userText = document.getElementById("user-text").value;
-      const userTextContainer = document.getElementById("user-text-container");
-      const fontSize = document.getElementById("font-size").value;
-      userTextContainer.innerText = userText;
-      userTextContainer.style.fontSize = `${fontSize}px`;
-    }
-
-    // 기존의 randomizeColors 함수를 randomizePastelColors로 변경
-    function randomizePastelColors() {
-      const randomColor1 = getRandomPastelColor();
-      const randomColor2 = getRandomPastelColor();
-      document.getElementById("color1").value = randomColor1;
-      document.getElementById("color2").value = randomColor2;
-      updateGradient();
-    }
-
-    // 새로운 randomizeColors 함수 추가 (모든 색상에서 무작위 선택)
-    function randomizeColors() {
-      const randomColor1 = getRandomColor();
-      const randomColor2 = getRandomColor();
-      document.getElementById("color1").value = randomColor1;
-      document.getElementById("color2").value = randomColor2;
-      updateGradient();
-    }
-
-    function getRandomPastelColor() {
-      const r = Math.floor((Math.random() * 127) + 127);
-      const g = Math.floor((Math.random() * 127) + 127);
-      const b = Math.floor((Math.random() * 127) + 127);
-      return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
-    }
-
-    // 모든 색상에서 무작위로 선택하는 함수 추가
-    function getRandomColor() {
-      const r = Math.floor(Math.random() * 256);
-      const g = Math.floor(Math.random() * 256);
-      const b = Math.floor(Math.random() * 256);
-      return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>

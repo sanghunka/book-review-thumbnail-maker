@@ -1,0 +1,324 @@
+/* ===== 전역 스타일 ===== */
+body {
+  font-family: "Roboto", "Inter", "Open Sans", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* ===== 헤더 ===== */
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.header p {
+  color: #666;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* ===== 메인 컨테이너 ===== */
+.main-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 30px;
+}
+
+/* ===== 컨트롤 패널 ===== */
+.controls-panel {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  height: fit-content;
+}
+
+.control-group {
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.control-group:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.control-group h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.control-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.control-row label {
+  min-width: 80px;
+  font-size: 14px;
+  color: #555;
+  font-weight: 500;
+}
+
+.control-row input, 
+.control-row select, 
+.control-row button {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  font-family: "Roboto", "Inter", "Open Sans", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+
+/* ===== 색상 선택기 스타일 ===== */
+.control-row input[type="color"] {
+  width: 50px;
+  height: 40px;
+  padding: 0;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  background: none;
+  transition: all 0.3s ease;
+}
+
+.control-row input[type="color"]:hover {
+  border-color: #007bff;
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.control-row input[type="color"]:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+/* 웹킷 기반 브라우저용 색상 선택기 스타일 */
+.control-row input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.control-row input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 6px;
+}
+
+/* Firefox용 색상 선택기 스타일 */
+.control-row input[type="color"]::-moz-color-swatch {
+  border: none;
+  border-radius: 6px;
+}
+
+.control-row button {
+  background: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-weight: 500;
+}
+
+.control-row button:hover {
+  background: #0056b3;
+}
+
+/* ===== 색상 그리드 ===== */
+.color-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* ===== 정렬 버튼들 ===== */
+.alignment-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+
+.alignment-buttons button {
+  padding: 8px;
+  font-size: 12px;
+  margin: 0;
+  font-weight: 500;
+}
+
+.alignment-buttons button.active {
+  background: #28a745;
+  font-weight: 600;
+}
+
+/* ===== 미리보기 컨테이너 ===== */
+.preview-container {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* ===== 그라데이션 미리보기 ===== */
+#gradient-preview {
+  width: 640px;
+  height: 360px;
+  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: crosshair;
+}
+
+/* ===== 이미지 컨테이너 ===== */
+#overlay-image-container {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  width: calc(50% - 30px);
+  height: calc(100% - 40px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+#overlay-image {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  border-radius: 5px;
+}
+
+/* ===== 드래그 가능한 텍스트 ===== */
+#draggable-text {
+  position: absolute;
+  cursor: move;
+  user-select: none;
+  white-space: pre-wrap;
+  font-family: "Roboto", "Inter", "Open Sans", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  line-height: 1.5;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  /* 초기 위치는 JavaScript에서 설정 */
+  word-wrap: break-word;
+  /* 텍스트 영역을 우측 절반으로 제한 */
+  left: 50%;
+  width: calc(50% - 40px);
+  padding: 0 20px;
+  box-sizing: border-box;
+  font-weight: 500;
+}
+
+/* ===== 텍스트 입력 영역 ===== */
+#user-text {
+  width: 100%;
+  height: 120px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  resize: vertical;
+  font-family: "Roboto", "Inter", "Open Sans", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  font-size: 14px;
+  margin-top: 20px;
+  font-weight: 400;
+}
+
+/* ===== 다운로드 섹션 ===== */
+.download-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.download-section button {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-family: "Roboto", "Inter", "Open Sans", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  font-weight: 600;
+}
+
+.download-section button:hover {
+  background: #1e7e34;
+}
+
+/* ===== 위치 표시기 ===== */
+.position-indicator {
+  position: absolute;
+  font-size: 10px;
+  color: #666;
+  background: rgba(255,255,255,0.8);
+  padding: 2px 4px;
+  border-radius: 3px;
+  pointer-events: none;
+  font-family: "Roboto", "Inter", "Open Sans", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  font-weight: 500;
+}
+
+/* ===== 도움말 텍스트 ===== */
+.help-text {
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* ===== 반응형 디자인 ===== */
+@media (max-width: 768px) {
+  .main-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  #gradient-preview {
+    width: 100%;
+    max-width: 640px;
+    height: 280px;
+  }
+  
+  .controls-panel {
+    padding: 20px;
+  }
+  
+  .control-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .control-row label {
+    min-width: auto;
+    margin-bottom: 5px;
+  }
+  
+  .alignment-buttons {
+    grid-template-columns: 1fr;
+  }
+  
+  #draggable-text {
+    left: 0;
+    width: 100%;
+    padding: 0 10px;
+  }
+} 
