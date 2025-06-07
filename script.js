@@ -374,8 +374,13 @@ function downloadImage() {
 
   const canvasWidth = 1920;
   const canvasHeight = 1080;
-  const previewWidth = 640;
-  const previewHeight = 360;
+  
+  // 프리뷰와 동일한 비율 유지를 위해 실제 프리뷰 크기 가져오기
+  const preview = document.getElementById("gradient-preview");
+  const previewRect = preview.getBoundingClientRect();
+  const previewWidth = previewRect.width;
+  const previewHeight = previewRect.height;
+  
   const scaleX = canvasWidth / previewWidth;
   const scaleY = canvasHeight / previewHeight;
 
@@ -402,17 +407,25 @@ function downloadImage() {
       const img = new Image();
       img.src = overlayImage.src;
       img.onload = function () {
-        const padding = 20 * scaleX;
-        const maxImgWidth = (canvasWidth - padding * 2) * 0.5;
+        // 프리뷰와 동일한 패딩 비율 사용
+        const basePadding = 20; // 프리뷰에서 사용하는 기본 패딩
+        const padding = basePadding * Math.min(scaleX, scaleY);
+        
+        // 좌측 절반 영역에 이미지 배치 (프리뷰와 동일한 비율)
+        const leftHalfWidth = canvasWidth * 0.5;
+        const maxImgWidth = leftHalfWidth - padding * 2;
         const maxImgHeight = canvasHeight - padding * 2;
         
+        // 이미지 비율을 유지하면서 영역에 맞춤 (프리뷰와 동일하게 1 제한 제거)
         const widthRatio = maxImgWidth / img.width;
         const heightRatio = maxImgHeight / img.height;
-        const scale = Math.min(widthRatio, heightRatio, 1);
+        const scale = Math.min(widthRatio, heightRatio); // 1 제한 제거로 확대 허용
         
         const imgWidth = img.width * scale;
         const imgHeight = img.height * scale;
-        const imgX = padding;
+        
+        // 좌측 절반 영역의 중앙에 배치
+        const imgX = padding + (maxImgWidth - imgWidth) / 2;
         const imgY = padding + (maxImgHeight - imgHeight) / 2;
         
         ctx.drawImage(img, imgX, imgY, imgWidth, imgHeight);
@@ -447,33 +460,72 @@ function drawAdvancedText(ctx, text, fontSize, color, shadowSize, canvasWidth, c
     ctx.shadowBlur = shadowSize * 2;
   }
   
-  const lines = text.split('\n');
-  const lineHeight = fontSize * 1.5;
-  
-  // 텍스트 위치 계산 - 우측 절반 영역 내에서
+  // 우측 절반 영역 계산
   const rightHalfStart = canvasWidth * 0.5;
   const rightHalfWidth = canvasWidth * 0.5;
-  const relativeX = (textPosition.x - 0.5) * 2; // 0.5~1.0을 0~1로 변환
+  const padding = 40; // 좌우 패딩
+  const maxTextWidth = rightHalfWidth - padding * 2; // 텍스트가 사용할 수 있는 최대 너비
   
+  // 텍스트 X 위치 계산
   let textX;
   if (currentTextAlign === 'left') {
-    textX = rightHalfStart + 40; // 좌측 정렬은 우측 절반의 시작 + 패딩
+    textX = rightHalfStart + padding;
   } else if (currentTextAlign === 'center') {
-    textX = rightHalfStart + (rightHalfWidth / 2); // 우측 절반의 중앙
+    textX = rightHalfStart + (rightHalfWidth / 2);
   } else if (currentTextAlign === 'right') {
-    textX = canvasWidth - 40; // 우측 정렬은 전체 너비에서 패딩만큼 뺀 위치
+    textX = canvasWidth - padding;
   }
-  
-  const textY = textPosition.y * canvasHeight;
   
   // 텍스트 정렬 설정
   ctx.textAlign = currentTextAlign;
   
-  // 여러 줄 텍스트 그리기
-  const totalHeight = lineHeight * lines.length;
-  let startY = textY - (totalHeight - lineHeight) / 2;
+  // 텍스트를 줄별로 나누고, 각 줄이 너무 길면 자동으로 줄바꿈
+  const inputLines = text.split('\n');
+  const wrappedLines = [];
   
-  lines.forEach(line => {
+  inputLines.forEach(line => {
+    if (ctx.measureText(line).width <= maxTextWidth) {
+      // 줄이 영역 안에 들어가면 그대로 추가
+      wrappedLines.push(line);
+    } else {
+      // 줄이 너무 길면 단어 단위로 줄바꿈
+      const words = line.split(' ');
+      let currentLine = '';
+      
+      words.forEach(word => {
+        const testLine = currentLine + (currentLine ? ' ' : '') + word;
+        if (ctx.measureText(testLine).width <= maxTextWidth) {
+          currentLine = testLine;
+        } else {
+          if (currentLine) {
+            wrappedLines.push(currentLine);
+            currentLine = word;
+          } else {
+            // 단어 하나가 너무 길면 강제로 잘라내기
+            wrappedLines.push(word);
+            currentLine = '';
+          }
+        }
+      });
+      
+      if (currentLine) {
+        wrappedLines.push(currentLine);
+      }
+    }
+  });
+  
+  const lineHeight = fontSize * 1.5;
+  const totalTextHeight = lineHeight * wrappedLines.length;
+  const textY = textPosition.y * canvasHeight;
+  
+  // 텍스트가 화면을 벗어나지 않도록 Y 위치 조정
+  let startY = textY - (totalTextHeight - lineHeight) / 2;
+  const minY = lineHeight / 2;
+  const maxY = canvasHeight - totalTextHeight + lineHeight / 2;
+  startY = Math.max(minY, Math.min(maxY, startY));
+  
+  // 줄바꿈된 텍스트 그리기
+  wrappedLines.forEach(line => {
     ctx.fillText(line, textX, startY);
     startY += lineHeight;
   });
